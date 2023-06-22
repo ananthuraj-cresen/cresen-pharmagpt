@@ -15,12 +15,12 @@ load_dotenv()
 # Configure OpenAI API
 openai.api_type = "azure"
 openai.api_version = "2023-03-15-preview"
-#openai.api_base = "https://cresen-open-ai.openai.azure.com/"    #os.getenv('OPENAI_API_BASE')
-#openai.api_key = "70cfad14bc804b44a3b2b294e98ddbe6"     #os.getenv("AZ_OPENAI_API_KEY")
+openai.api_base = os.getenv('OPENAI_API_BASE')
+openai.api_key = os.getenv("AZ_OPENAI_API_KEY")
 
 # Initialize gpt-35-turbo and our embedding model
-llm = AzureChatOpenAI(deployment_name="cresen-gpt-35-turbo", openai_api_version="2023-03-15-preview", openai_api_key = "70cfad14bc804b44a3b2b294e98ddbe6", openai_api_base = "https://cresen-open-ai.openai.azure.com/") # For Chat
-embeddings = OpenAIEmbeddings(model='text-embedding-ada-002', deployment='text-embedding-ada-002', chunk_size=1, openai_api_key = "70cfad14bc804b44a3b2b294e98ddbe6", openai_api_base = "https://cresen-open-ai.openai.azure.com/") # For Embeddings
+llm = AzureChatOpenAI(deployment_name="cresen-gpt-35-turbo", openai_api_version="2023-03-15-preview") # For Chat
+embeddings = OpenAIEmbeddings(model='text-embedding-ada-002', deployment='text-embedding-ada-002', chunk_size=1) # For Embeddings
 
 # Load vectorstore
 persist_directory = 'db'
