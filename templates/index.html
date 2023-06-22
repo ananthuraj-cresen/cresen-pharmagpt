@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cresen PharmaGPT</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box {
+            width: min(95%, 800px);
+            height: 100vh;
+            margin-top: 85px;
+        }
+
+        .bottom {
+            position: fixed;
+            bottom: 0;
+            padding-bottom: 5%;
+            background-color: white;
+            width: min(95%, 800px);
+        }
+
+        .message {
+            margin: 30px 20px;
+        }
+
+        .usermessagediv {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            margin-top: 25px;
+            margin-left: 20%;
+        }
+
+        .usermessage {
+            background-color: #1e80a3;
+            color: #fff;
+            padding: 0.5rem .875rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            line-height: 1.6;
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        .usermessage:hover {
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+        }
+
+        .appmessagediv {
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            margin-top: 25px;
+            margin-right: 20%;
+        }
+
+        .appmessage {
+            background-color: #fcb25d;
+            color: #000;
+            padding: 0.5rem .875rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            line-height: 1.6;
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        
+        
+        .appmessage:hover {
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+        }
+
+        .upper {
+            max-height: 100%;
+            padding-top: 40px;
+            padding-bottom: 170px;
+            overflow: auto;
+        }
+
+        .upper::-webkit-scrollbar {
+            width: 0 !important
+        }
+
+        #sendbtn {
+            transition: transform 0.3s ease-in-out;
+        }
+        #sendbtn:disabled {
+            opacity: 0.6;
+        }
+        #sendbtn:hover {
+            transform: scale(1.1);
+        }
+
+        .downwarning {
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+            font-size: 90%;
+            color: gray;
+        }
+
+        nav {
+            position: fixed;
+            width: 100%;
+            padding: 3px;
+            box-shadow: 1px 1px 5px #80808057;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #000 }
+        }
+        button:active {
+            opacity: 0.5;
+            transition: opacity 0.1s ease;
+        }
+        button:hover {
+            background-color: #107c10;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 1em }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #000 }
+        }
+        
+        .typing-indicator {
+            display: inline-block;
+            height: 1em;
+            font-size: 20px;
+            width: 1em;
+            white-space: pre-wrap;
+            overflow: hidden;
+            border-right: .2em solid;
+            animation: typing 0.7s steps(4, end) infinite, 
+                       blink-caret .75s step-end infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+        
+        .typing-indicator::after {
+            content: '.';
+            animation: blink 1s infinite;
+        }
+        
+
+    </style>
+</head>
+
+<body>
+
+    <nav class="bg-white border-gray-200 dark:bg-gray-900">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <a href="#" class="flex items-center">
+                <img src="{{ url_for('static', filename='images/1613139082756.jpeg') }}" class="h-8 mr-3" alt="New Logo">
+    
+                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Cresen PharmaGPT</span>
+            </a>
+            <div>
+                <button id="startChatBtn" style="background-color:#1e80a3; color:white; padding:10px 20px; border-radius:5px; margin-right:10px;">
+                    Start Chat
+                </button>
+                <button id="clearChatBtn" style="background-color:#1e80a3; color:white; padding:10px 20px; border-radius:5px;">
+                    Clear Chat
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    
+    
+
+    <div class="container">
+        <div class="box">
+            <div class="upper" id="upperid">
+                <span class="downwarning">Type your questions related to drugs in the box below.</span>
+                
+
+            </div>
+
+            <div class="bottom">
+                 <form id="userinputform">
+                    <label for="chat" class="sr-only">Your question</label>
+                    <div class="flex items-center px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700">
+
+                        <textarea id="userinput" rows="1" disabled
+                              class="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              placeholder="Click 'Start Chat' to begin..." required oninput="auto_grow(this)" autofocus></textarea>
+                        <button type="submit" disabled
+                              class="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600"
+                              id="sendbtn">
+                                <svg aria-hidden="true" class="w-6 h-6 rotate-90" fill="#1e80a3" viewBox="0 0 20 20"
+                              xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                   d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z">
+                                </path>
+                              </svg>
+                              <span class="sr-only">Send message</span>
+                        </button>
+
+                    </div>
+                </form>
+                <span class="downwarning">I will try to answer your questions based on my knowledge about drugs documents.</span>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // for scrolling messages
+        function scrollToBottom() {
+            var div = document.getElementById("upperid");
+            div.scrollTop = div.scrollHeight;
+        }
+        scrollToBottom()
+
+        document.getElementById("userinputform").addEventListener("submit", function (event) {
+            event.preventDefault();
+            formsubmitted();
+        });
+
+        // sending request to python server
+        // sending request to python server
+        const formsubmitted = async () => {
+            let userinput = document.getElementById('userinput').value;
+            let sendbtn = document.getElementById('sendbtn');
+            let userinputarea = document.getElementById('userinput');
+            let upperdiv = document.getElementById('upperid');
+            upperdiv.innerHTML = upperdiv.innerHTML + `<div class="message">
+                    <div class="usermessagediv">
+                        <div class="usermessage">
+                            ${userinput}
+                        </div>
+                    </div>
+                </div>`;
+
+            // Start typing animation
+            upperdiv.innerHTML += `<div class="message">
+                <div class="appmessagediv">
+                    <div class="appmessage typing-indicator">
+                        ...
+                    </div>
+                </div>
+            </div>`;
+
+            sendbtn.disabled = true;
+            userinputarea.disabled = true;
+            scrollToBottom();
+            document.getElementById('userinput').value = "";
+            document.getElementById('userinput').style.height = "2.5rem";  // Reset the textarea height
+            document.getElementById('userinput').placeholder = "Wait, let me think . . .";
+
+            const response = await fetch("/data", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ data: userinput })
+
+            });
+
+            let json = await response.json();
+
+            // Remove typing animation
+            upperdiv.lastChild.remove();
+
+            document.getElementById('userinput').placeholder = "Your question..."
+
+            if (json.response) {
+                let message = json.message;
+                message = message.toString();
+
+                upperdiv.innerHTML = upperdiv.innerHTML + `<div class="message">
+                    <div class="appmessagediv">
+                        <div class="appmessage" id="temp">
+
+                        </div>
+                    </div>
+                </div>`;
+
+                let temp = document.getElementById('temp');
+                let index = 0;
+
+                function displayNextLetter() {
+                    scrollToBottom()
+                    if (index < message.length) {
+                        temp.innerHTML = temp.innerHTML + message[index];
+                        index++;
+                        setTimeout(displayNextLetter, 30);
+                    } else {
+                        temp.removeAttribute('id');
+                        sendbtn.disabled = false;
+                        userinputarea.disabled = false;
+                    }
+                }
+                displayNextLetter();
+                scrollToBottom();
+            }
+            else {
+                let message = json.message;
+                upperdiv.innerHTML = upperdiv.innerHTML +
+                    `<div class="message">
+                        <div class="appmessagediv">
+                            <div class="appmessage"  style="border: 1px solid red;">
+                                ${message}
+                            </div>
+                        </div>
+                    </div>`;
+                sendbtn.disabled = false;
+                userinputarea.disabled = false;
+            }
+            scrollToBottom();
+        }
+
+ 
+
+        function auto_grow(element) {
+            element.style.height = "5px";
+            element.style.height = (element.scrollHeight)+"px";
+        }
+
+
+        document.getElementById("clearChatBtn").addEventListener("click", function() {
+            // Clears the chat
+            document.getElementById("upperid").innerHTML = '<span class="downwarning">Type your questions related to drugs in the box below.</span>';
+        });
+     
+        const clearChat = async () => {
+            // Clear the chat display
+            document.getElementById('upperid').innerHTML = '<span class="downwarning">Type your questions related to drugs in the box below.</span>';
+        
+            // Send request to server to clear chat history
+            const response = await fetch("/clear", {
+                method: 'POST',
+            });
+        
+            let json = await response.json();
+            if (json.response) {
+                console.log("Chat history cleared successfully");
+            } else {
+                console.log("Failed to clear chat history");
+            }
+        }
+        
+        document.getElementById("clearChatBtn").addEventListener("click", clearChat);
+        
+        const startChat = async () => {
+            // Clear the chat on the client side
+            clearChat();
+        
+            // Send request to server to clear chat history
+            const response = await fetch("/clear", {
+                method: 'POST',
+            });
+        
+            let json = await response.json();
+            if (json.response) {
+                console.log("Chat history cleared successfully");
+                document.getElementById('clearChatBtn').disabled = false;
+                document.getElementById('userinput').disabled = false;
+                document.getElementById('sendbtn').disabled = false;
+                document.getElementById('userinput').placeholder = "Type your questions here...";
+                document.getElementById('userinput').autofocus = true;
+            } else {
+                console.log("Failed to clear chat history");
+            }
+        }
+        
+        document.getElementById("startChatBtn").addEventListener("click", startChat);
+        
+        
+
+        
+        
+
+
+    </script>
+</body>
+
+
+</html>
+
+
