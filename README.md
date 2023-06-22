@@ -46,3 +46,5 @@ Do not forget to provide your own secret key in the Flask app configuration.
 Adjust the search_kwargs argument to the as_retriever method as necessary to modify the behavior of the search (e.g., the number of results to consider).
 Make sure to properly handle the session data and clear chat history as needed.
 
+![Alt text](image.png)
+
